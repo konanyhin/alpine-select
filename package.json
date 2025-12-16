@@ -1,0 +1,30 @@
+{
+  "name": "alpinejs-select",
+  "version": "1.0.0",
+  "description": "A smart select component for Alpine.js",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite playground",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "alpinejs",
+    "select",
+    "ui"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "alpinejs": "^3.13.3"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "marked": "^11.1.0",
+    "marked-highlight": "^2.1.1",
+    "highlight.js": "^11.9.0"
+  }
+}
