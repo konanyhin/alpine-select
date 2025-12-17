@@ -67,6 +67,15 @@ class Select {
             }
             this.dispatchChange();
         };
+
+        this.el.setOption = (id) => {
+            const option = this.data.find(item => item.id == id);
+            if (!option) {
+                console.error(`Alpine Select: Option with ID "${id}" not found.`);
+                return;
+            }
+            this.selectItem(option);
+        };
     }
 
     handleClear(e) {
