@@ -77,7 +77,7 @@ export class ApiService {
         }, this.apiConfig.delay || 0);
     }
 
-    setOptions(options) {
+    updateData(options) {
         if (this.abortController) {
             this.abortController.abort();
         }

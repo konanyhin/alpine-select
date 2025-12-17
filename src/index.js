@@ -50,16 +50,22 @@ class Select {
             return this.data;
         };
 
-        this.el.setOptions = (options) => {
+        this.el.updateData = (options) => {
             if (!validateData(options)) {
                 return;
             }
+            if (this.config.multiple) {
+                this.state.selected = [];
+            } else {
+                this.state.selected = null;
+            }
             if (this.apiService) {
-                this.apiService.setOptions(options);
+                this.apiService.updateData(options);
             } else {
                 this.data = options;
                 this.state.filteredData = options;
             }
+            this.dispatchChange();
         };
     }
 
