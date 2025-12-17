@@ -1,4 +1,4 @@
-import { defaultConfig, configure, validateConfig } from './config.js';
+import { defaultConfig, configure, validateConfig, validateData } from './config.js';
 import { UI } from './ui.js';
 import { createInitialState } from './state.js';
 import { ApiService } from './api.js';
@@ -45,6 +45,22 @@ class Select {
         Object.defineProperty(this.el, 'value', {
             get: () => this.state.selected
         });
+
+        this.el.getOptions = () => {
+            return this.data;
+        };
+
+        this.el.setOptions = (options) => {
+            if (!validateData(options)) {
+                return;
+            }
+            if (this.apiService) {
+                this.apiService.setOptions(options);
+            } else {
+                this.data = options;
+                this.state.filteredData = options;
+            }
+        };
     }
 
     handleClear(e) {

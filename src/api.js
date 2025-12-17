@@ -76,4 +76,13 @@ export class ApiService {
             this.fetchData();
         }, this.apiConfig.delay || 0);
     }
+
+    setOptions(options) {
+        if (this.abortController) {
+            this.abortController.abort();
+        }
+        clearTimeout(this.debounceTimer);
+        this.state.loading = false;
+        this.state.filteredData = options;
+    }
 }

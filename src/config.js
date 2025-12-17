@@ -92,6 +92,21 @@ export function configure(options) {
     }
 }
 
+export function validateData(data) {
+    if (!Array.isArray(data)) {
+        console.error('Alpine Select: Data must be an array.');
+        return false;
+    }
+    const invalidItems = data.filter(item => 
+        typeof item !== 'object' || item === null || !item.hasOwnProperty('id') || !item.hasOwnProperty('text')
+    );
+    if (invalidItems.length > 0) {
+        console.error('Alpine Select: All items in "data" must be objects with "id" and "text" properties.', invalidItems);
+        return false;
+    }
+    return true;
+}
+
 export function validateConfig(config) {
     if (!config.name || typeof config.name !== 'string') {
         console.error('Alpine Select: "name" is required and must be a string.');
@@ -138,15 +153,6 @@ export function validateConfig(config) {
             console.error('Alpine Select: "api.headers" must be an object.');
         }
     } else {
-        if (!Array.isArray(config.data)) {
-            console.error('Alpine Select: "data" must be an array.');
-        } else {
-            const invalidItems = config.data.filter(item => 
-                typeof item !== 'object' || item === null || !item.hasOwnProperty('id') || !item.hasOwnProperty('text')
-            );
-            if (invalidItems.length > 0) {
-                console.error('Alpine Select: All items in "data" must be objects with "id" and "text" properties.', invalidItems);
-            }
-        }
+        validateData(config.data);
     }
 }
