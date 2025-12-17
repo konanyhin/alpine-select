@@ -1,4 +1,12 @@
+/**
+ * Manages the UI of the select component
+ */
 export class UI {
+    /**
+     * @param {State} state
+     * @param {object} config
+     * @param {Select} selectInstance
+     */
     constructor(state, config, selectInstance) {
         this.state = state;
         this.config = config;
@@ -7,20 +15,32 @@ export class UI {
         this.contents = config.contents;
     }
 
+    /**
+     * Builds the UI, creating the native select, trigger, and list
+     * @param {HTMLElement} container
+     */
     build(container) {
         this.addClasses(container, this.classMap.container);
         container.innerHTML = '';
 
+        // Create and append the native select for form submissions
         this.nativeSelect = this.createNativeSelect();
         container.appendChild(this.nativeSelect);
 
+        // Create and append the trigger element
         this.trigger = this.createTrigger();
         container.appendChild(this.trigger);
 
+        // Create and append the dropdown list
         this.list = this.createList();
         container.appendChild(this.list);
     }
 
+    /**
+     * Adds CSS classes to an element
+     * @param {HTMLElement} el
+     * @param {string} classes
+     */
     addClasses(el, classes) {
         if (classes) {
             const classList = classes.split(' ').filter(Boolean);
@@ -30,6 +50,10 @@ export class UI {
         }
     }
 
+    /**
+     * Creates the hidden native select element
+     * @returns {HTMLSelectElement}
+     */
     createNativeSelect() {
         const select = document.createElement('select');
         if (this.config.name) select.name = this.config.name;
@@ -39,6 +63,10 @@ export class UI {
         return select;
     }
 
+    /**
+     * Creates the trigger element that opens the dropdown
+     * @returns {HTMLDivElement}
+     */
     createTrigger() {
         const trigger = document.createElement('div');
         this.addClasses(trigger, this.classMap.trigger);
@@ -69,6 +97,10 @@ export class UI {
         return trigger;
     }
 
+    /**
+     * Creates the dropdown list with search and message elements
+     * @returns {HTMLUListElement}
+     */
     createList() {
         const list = document.createElement('ul');
         this.addClasses(list, this.classMap.dropdown);
@@ -89,23 +121,27 @@ export class UI {
         searchContainer.appendChild(this.searchInput);
         list.appendChild(searchContainer);
 
+        // Message for loading state
         this.loadingMessage = document.createElement('div');
         this.addClasses(this.loadingMessage, this.classMap.loading);
         this.loadingMessage.textContent = this.contents.loading;
         this.loadingMessage.style.display = 'none';
         list.appendChild(this.loadingMessage);
 
+        // Message for minimum input length
         this.minInputLengthMessage = document.createElement('div');
         this.addClasses(this.minInputLengthMessage, this.classMap.empty);
         this.minInputLengthMessage.style.display = 'none';
         list.appendChild(this.minInputLengthMessage);
 
+        // Message for API errors
         this.errorMessage = document.createElement('div');
         this.addClasses(this.errorMessage, this.classMap.error);
         this.errorMessage.textContent = this.contents.error;
         this.errorMessage.style.display = 'none';
         list.appendChild(this.errorMessage);
 
+        // Message for empty results
         this.emptyMessage = document.createElement('div');
         this.addClasses(this.emptyMessage, this.classMap.empty);
         this.emptyMessage.textContent = this.contents.emptyMessage;
@@ -115,12 +151,17 @@ export class UI {
         return list;
     }
 
+    /**
+     * Renders the options in the dropdown list
+     */
     renderOptions() {
+        // Clear existing options
         this.list.querySelectorAll('[data-x-select-option]').forEach(node => node.remove());
         
         const minLength = this.config.api.minInputLength || 0;
         const hasMinLength = this.config.api && this.state.search.length < minLength;
 
+        // Show/hide messages based on state
         this.minInputLengthMessage.style.display = hasMinLength ? 'block' : 'none';
         if (hasMinLength) {
             this.minInputLengthMessage.textContent = this.contents.minInputLengthMessage(minLength);
@@ -136,6 +177,7 @@ export class UI {
             this.state.filteredData.length === 0 
             ? 'block' : 'none';
 
+        // Render each option
         this.state.filteredData.forEach(item => {
             const li = document.createElement('li');
             this.addClasses(li, this.classMap.option);
@@ -145,6 +187,7 @@ export class UI {
                 ? this.state.selected.some(i => i.id === item.id)
                 : this.state.selected && this.state.selected.id === item.id;
 
+            // Use custom renderer or default
             if (this.config.renderOption) {
                 li.innerHTML = this.config.renderOption(item);
             } else {
@@ -169,6 +212,9 @@ export class UI {
         });
     }
 
+    /**
+     * Updates the native select with the selected values
+     */
     updateNativeSelect() {
         this.nativeSelect.innerHTML = '';
         if (this.config.multiple) {
@@ -190,6 +236,7 @@ export class UI {
                 this.nativeSelect.appendChild(option);
                 this.nativeSelect.value = this.state.selected.id;
             } else {
+                // Create an empty option if nothing is selected
                 const option = document.createElement('option');
                 option.value = '';
                 option.textContent = '';
@@ -200,9 +247,13 @@ export class UI {
             }
         }
         
+        // Dispatch a change event for frameworks like Livewire
         this.nativeSelect.dispatchEvent(new Event('change'));
     }
 
+    /**
+     * Updates the trigger display with selected items or placeholder
+     */
     updateTriggerDisplay() {
         this.tagsContainer.innerHTML = '';
         this.tagsContainer.className = '';
@@ -210,6 +261,7 @@ export class UI {
         if (this.config.multiple) {
             this.addClasses(this.tagsContainer, 'flex flex-wrap gap-1');
             if (this.state.selected.length > 0) {
+                // Create tags for each selected item
                 this.state.selected.forEach(item => {
                     const tag = document.createElement('span');
                     this.addClasses(tag, this.classMap.tag);
@@ -232,6 +284,7 @@ export class UI {
                     this.tagsContainer.appendChild(tag);
                 });
             } else {
+                // Show placeholder if no items are selected
                 this.addClasses(this.tagsContainer, this.classMap.placeholder);
                 this.tagsContainer.textContent = this.config.placeholder;
             }
@@ -244,6 +297,7 @@ export class UI {
                     this.tagsContainer.textContent = this.state.selected.text;
                 }
             } else {
+                // Show placeholder if no item is selected
                 this.addClasses(this.tagsContainer, this.classMap.placeholder);
                 this.tagsContainer.textContent = this.config.placeholder;
             }

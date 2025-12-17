@@ -1,6 +1,14 @@
+/**
+ * Creates the initial reactive state for the select component
+ * @param {object} config
+ * @param {Array} data
+ * @param {import('alpinejs').Alpine} Alpine
+ * @returns {object}
+ */
 export function createInitialState(config, data, Alpine) {
     let initialSelected = config.multiple ? [] : null;
 
+    // Set pre-selected value if provided and not using API
     if (!config.api && config.preSelectedId !== null && config.preSelectedId !== undefined) {
         if (config.multiple) {
             const ids = Array.isArray(config.preSelectedId) ? config.preSelectedId : [config.preSelectedId];

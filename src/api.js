@@ -1,6 +1,13 @@
 import axios from 'axios';
 
+/**
+ * Service for handling API requests
+ */
 export class ApiService {
+    /**
+     * @param {State} state
+     * @param {object} apiConfig
+     */
     constructor(state, apiConfig) {
         this.state = state;
         this.apiConfig = apiConfig;
@@ -8,6 +15,9 @@ export class ApiService {
         this.abortController = null;
     }
 
+    /**
+     * Fetches data from the API based on the current search term
+     */
     fetchData() {
         const minLength = this.apiConfig.minInputLength || 0;
         if (this.state.search.length < minLength) {
@@ -16,6 +26,7 @@ export class ApiService {
             return;
         }
 
+        // Abort previous request if it's still running
         if (this.abortController) {
             this.abortController.abort();
         }
@@ -52,7 +63,7 @@ export class ApiService {
             })
             .catch(error => {
                 if (axios.isCancel(error)) {
-                    return;
+                    return; // Ignore aborted requests
                 }
                 console.error('Alpine Select: API call failed.', error);
                 this.state.filteredData = [];
@@ -61,6 +72,9 @@ export class ApiService {
             });
     }
 
+    /**
+     * Initiates a debounced search request
+     */
     search() {
         const searchTerm = this.state.search;
         const minLength = this.apiConfig.minInputLength || 0;
@@ -77,6 +91,10 @@ export class ApiService {
         }, this.apiConfig.delay || 0);
     }
 
+    /**
+     * Updates the data directly, cancelling any pending requests
+     * @param {Array} options
+     */
     updateData(options) {
         if (this.abortController) {
             this.abortController.abort();

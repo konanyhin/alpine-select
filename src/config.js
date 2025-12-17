@@ -1,15 +1,29 @@
+/**
+ * Default configuration for the select component
+ */
 export const defaultConfig = {
+    // General settings
     placeholder: 'Select an option',
     allowClear: false,
     required: false,
     multiple: false,
     closeOnSelect: true,
-    api: false,
-    searchKeys: ['text'],
-    renderOption: null,
-    renderSelected: null,
     preSelectedId: null,
     onSelect: null,
+    name: null,
+
+    // Data settings
+    data: [],
+    searchKeys: ['text'],
+
+    // API settings
+    api: false,
+
+    // Custom rendering functions
+    renderOption: null,
+    renderSelected: null,
+
+    // Localized content and icons
     contents: {
         searchPlaceholder: 'Search...',
         emptyMessage: 'No results found',
@@ -20,6 +34,8 @@ export const defaultConfig = {
         arrowIconDown: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>',
         arrowIconUp: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>'
     },
+
+    // CSS classes for theming
     classMap: {
         container: 'relative w-full',
         trigger: 'flex items-center justify-between w-full px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 cursor-pointer min-h-[42px] dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:focus:ring-gray-500 dark:focus:border-gray-500',
@@ -43,6 +59,10 @@ export const defaultConfig = {
     }
 };
 
+/**
+ * Sets global configuration options
+ * @param {object} options
+ */
 export function configure(options) {
     if (typeof options !== 'object' || options === null) {
         console.error('Alpine Select: Configuration must be an object.');
@@ -59,7 +79,7 @@ export function configure(options) {
             const value = options[key];
             const defaultValue = defaultConfig[key];
 
-            // Basic type validation
+            // Deep merge for classMap and contents
             if (key === 'classMap') {
                 if (typeof value !== 'object' || value === null) {
                     console.error(`Alpine Select: "classMap" must be an object.`);
@@ -73,6 +93,7 @@ export function configure(options) {
                 }
                 defaultConfig.contents = { ...defaultConfig.contents, ...value };
             } else {
+                // Basic type validation for other keys
                 if (typeof defaultValue === 'boolean' && typeof value !== 'boolean' && value !== null) {
                         console.error(`Alpine Select: Option "${key}" must be a boolean.`);
                         continue;
@@ -81,7 +102,6 @@ export function configure(options) {
                     console.error(`Alpine Select: Option "${key}" must be a string.`);
                     continue;
                 }
-                // Allow function for renderOption and renderSelected
                 if ((key === 'renderOption' || key === 'renderSelected' || key === 'onSelect') && value !== null && typeof value !== 'function') {
                     console.error(`Alpine Select: Option "${key}" must be a function.`);
                     continue;
@@ -93,6 +113,11 @@ export function configure(options) {
     }
 }
 
+/**
+ * Validates the data array format
+ * @param {Array} data
+ * @returns {boolean}
+ */
 export function validateData(data) {
     if (!Array.isArray(data)) {
         console.error('Alpine Select: Data must be an array.');
@@ -108,6 +133,10 @@ export function validateData(data) {
     return true;
 }
 
+/**
+ * Validates the configuration for a select instance
+ * @param {object} config
+ */
 export function validateConfig(config) {
     if (!config.name || typeof config.name !== 'string') {
         console.error('Alpine Select: "name" is required and must be a string.');
@@ -133,6 +162,7 @@ export function validateConfig(config) {
         console.error('Alpine Select: "searchKeys" must be a non-empty array of strings.');
     }
 
+    // Validate API configuration
     if (config.api) {
         if (typeof config.api !== 'object' || config.api === null) {
             console.error('Alpine Select: "api" must be an object.');
