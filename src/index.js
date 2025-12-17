@@ -69,6 +69,10 @@ class Select {
         };
 
         this.el.setOption = (id) => {
+            if (id === null) {
+                this.handleClear({ stopPropagation: () => {} });
+                return;
+            }
             const option = this.data.find(item => item.id == id);
             if (!option) {
                 console.error(`Alpine Select: Option with ID "${id}" not found.`);
