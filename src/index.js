@@ -105,6 +105,10 @@ class Select {
         }
         
         this.dispatchChange();
+
+        if (this.config.onSelect) {
+            this.config.onSelect(this.state.selected, this.data);
+        }
     }
 
     dispatchChange() {

@@ -9,6 +9,7 @@ export const defaultConfig = {
     renderOption: null,
     renderSelected: null,
     preSelectedId: null,
+    onSelect: null,
     contents: {
         searchPlaceholder: 'Search...',
         emptyMessage: 'No results found',
@@ -81,7 +82,7 @@ export function configure(options) {
                     continue;
                 }
                 // Allow function for renderOption and renderSelected
-                if ((key === 'renderOption' || key === 'renderSelected') && value !== null && typeof value !== 'function') {
+                if ((key === 'renderOption' || key === 'renderSelected' || key === 'onSelect') && value !== null && typeof value !== 'function') {
                     console.error(`Alpine Select: Option "${key}" must be a function.`);
                     continue;
                 }
@@ -118,6 +119,10 @@ export function validateConfig(config) {
 
     if (config.renderSelected && typeof config.renderSelected !== 'function') {
         console.error('Alpine Select: "renderSelected" must be a function.');
+    }
+
+    if (config.onSelect && typeof config.onSelect !== 'function') {
+        console.error('Alpine Select: "onSelect" must be a function.');
     }
     
     if (typeof config.closeOnSelect !== 'boolean') {
